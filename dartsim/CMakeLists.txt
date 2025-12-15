@@ -67,7 +67,7 @@ set(versioned ${CMAKE_SHARED_LIBRARY_PREFIX}${dartsim_plugin}${CMAKE_SHARED_LIBR
 set(unversioned ${CMAKE_SHARED_LIBRARY_PREFIX}${PROJECT_NAME_NO_VERSION_LOWER}-${engine_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
 if (WIN32)
   # disable MSVC inherit via dominance warning
-  target_compile_options(${dartsim_plugin} PUBLIC "/wd4250")
+  target_compile_options(${dartsim_plugin} PRIVATE "/wd4250")
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy
       ${IGNITION_PHYSICS_ENGINE_INSTALL_DIR}\/${versioned}
       ${IGNITION_PHYSICS_ENGINE_INSTALL_DIR}\/${unversioned})")
@@ -98,6 +98,11 @@ foreach(test ${tests})
 
   if (DART_HAS_CONTACT_SURFACE_HEADER)
     target_compile_definitions(${test} PRIVATE DART_HAS_CONTACT_SURFACE)
+  endif()
+
+  if (WIN32)
+    # disable MSVC inherit via dominance warning
+    target_compile_options(${test} PRIVATE "/wd4250")
   endif()
 
   # Helps when we want to build a single test after making changes to dartsim_plugin
